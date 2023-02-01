@@ -32,22 +32,21 @@ Vue.component('product', {
         <div class="product-info">
             <h1>{{ title }}</h1>
             <p>{{ description }}</p>
-            <p v-if="inStock > 10 ">In stock</p>
+            <p v-if="inStock > 10" >In stock</p>
             <p v-else-if="inStock <= 10 && inStock > 0">Almost sold out!</p>
             <p v-else style="text-decoration: line-through">Out of Stock</p>
             <a v-bind:href="link">More products like this</a> <br>
+            <info :shipping="shipping" :details="details"></info>
             <span v-if="onSale">ON SALE</span>
             <span v-else="onSale"></span> 
             <p>{{sale}}</p>
-            <div v-for="size in sizes">{{size}}</div>       
-            <div class="color-box" v-for="(variant, index) in variants" :key="variant.variantId" :style="{ backgroundColor:variant.variantColor }" @mouseover="updateProduct(index)">
-            </div>
+            <div v-for="size in sizes">{{size}}</div>
+            <div class="color-box" v-for="(variant, index) in variants" :key="variant.variantId" :style="{ backgroundColor:variant.variantColor }" @mouseover="updateProduct(index)"></div>
+                <button v-on:click="addToCart" :disabled="!inStock"   :class="{ disabledButton: !inStock } "> Add to cart </button>
+                <button v-on:click="removeToCart">Remove from cart</button>
         </div>
             <product-tabs :reviews="reviews"></product-tabs>
-            <info :shipping="shipping" :details="details"></info>
-            <button v-on:click="addToCart" :disabled="!inStock" :class="{ disabledButton: !inStock }"> Add to cart </button>
-            <button v-on:click="removeToCart">Remove from cart</button>
-        </div>
+    </div>
 
  `,
         data() {
@@ -259,7 +258,7 @@ Vue.component('info', {
       <div>
       
         <ul>
-          <span class="tabs" :class="{ activeTab: selectedTab === tab }" v-for="(tab, index) in tabs" @click="selectedTab = tab">{{ tab }}</span>
+          <span class="tab" :class="{ activeTab: selectedTab === tab }" v-for="(tab, index) in tabs" @click="selectedTab = tab">{{ tab }}</span>
         </ul>
 
         <div v-show="selectedTab === 'Shipping'">
@@ -302,5 +301,3 @@ let app = new Vue({
         }
     }
 })
-
-
