@@ -27,7 +27,7 @@ Vue.component('product', {
         template: `
 	<div class="product">
         <div class="product-image">
-                    <img :src="image" :alt="altText" :class="product-image"/>
+                    <img :src="image" :alt="altText" :class="{ disabledButton: !animate }"/>
 
         </div>
 
@@ -69,13 +69,15 @@ Vue.component('product', {
                         variantId: 2234,
                         variantColor: 'green',
                         variantImage: "./assets/vmSocks-green-onWhite.jpg",
-                        variantQuantity: 10
+                        variantQuantity: 10,
+                        animate:false
                     },
                     {
                         variantId: 2235,
                         variantColor: 'blue',
                         variantImage: "./assets/vmSocks-blue-onWhite.jpg",
-                        variantQuantity: 0
+                        variantQuantity: 0,
+                        animate:false
                     }
                 ],
                 sizes: ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'],
@@ -84,6 +86,8 @@ Vue.component('product', {
         },
         methods: {
             addToCart() {
+                this.variants[this.selectedVariant].animate = true;
+
                 this.$emit('add-to-cart', this.variants[this.selectedVariant].variantId);
                 eventBus.$emit("on-animation");
             },
@@ -134,7 +138,7 @@ Vue.component('product', {
     Vue.component("animation", {
         template: `
         <div class="product-image">
-              <p>{{image}}</p>
+              <p>{{animation}}</p>
         </div>
       `,
         methods:{
@@ -152,7 +156,7 @@ Vue.component('product', {
         },
         data() {
             return {
-                animation: true
+                animation: this.variants[this.selectedVariant].variantImage
             };
         },
     }),
