@@ -19,14 +19,16 @@ Vue.component('product', {
         props: {
             premium: {
                 type: Boolean,
-                required: true
+                required: true,
+                show: true
             }
         },
 
         template: `
 	<div class="product">
         <div class="product-image">
-            <img :src="image" :alt="altText"/>
+                    <img :src="image" :alt="altText" :class="product-image"/>
+
         </div>
 
         <div class="product-info">
@@ -42,7 +44,9 @@ Vue.component('product', {
             <p>{{sale}}</p>
             <div v-for="size in sizes">{{size}}</div>
             <div class="color-box" v-for="(variant, index) in variants" :key="variant.variantId" :style="{ backgroundColor:variant.variantColor }" @mouseover="updateProduct(index)"></div>
-                <button v-on:click="addToCart" :disabled="!inStock"   :class="{ disabledButton: !inStock } "> Add to cart </button>
+                <button v-on:click="addToCart" 
+                :disabled="!inStock"   :class="{ disabledButton: !inStock } "> Add to cart </button>
+                 <div id ="mes"></div>
                 <button v-on:click="removeToCart">Remove from cart</button>
         </div>
             <product-tabs :reviews="reviews"></product-tabs>
@@ -81,6 +85,7 @@ Vue.component('product', {
         methods: {
             addToCart() {
                 this.$emit('add-to-cart', this.variants[this.selectedVariant].variantId);
+                eventBus.$emit("on-animation");
             },
 
             updateProduct(index) {
@@ -124,9 +129,33 @@ Vue.component('product', {
                 this.reviews.push(productReview)
             })
         }
-
     },
 
+    Vue.component("animation", {
+        template: `
+        <div class="product-image">
+              <p>{{image}}</p>
+        </div>
+      `,
+        methods:{
+            animationTime () {
+                setTimeout(() => {
+                    this.animationTime = false
+                }, 5000);
+            }
+        },
+
+        mounted() {
+            eventBus.$on("on-animation", (animation) => {
+                this.animation = animation
+            });
+        },
+        data() {
+            return {
+                animation: true
+            };
+        },
+    }),
 
     Vue.component('product-review', {
         template: `
